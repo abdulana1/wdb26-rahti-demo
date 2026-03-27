@@ -18,4 +18,4 @@ def ip(request: Request):
 
 @app.get("/hello")
 def hello():
-    return { "msg": "Hello Anab"}
+    return { "msg": "hello auror"}
