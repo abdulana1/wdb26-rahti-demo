@@ -30,3 +30,11 @@ def ip(request: Request):
 @app.get("/hello")
 def hello():
     return { "msg": "hello auror"}
+
+@app.get("/rooms")
+def get_rooms():
+    rooms = [
+        {"room_number": 101, "type": "single", "price": 800},
+        {"room_number": 102, "type": "double", "price": 1200}
+    ]
+    return rooms
