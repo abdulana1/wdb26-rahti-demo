@@ -18,32 +18,29 @@ app.add_middleware(
 #Skapa databas-schema:
 create_schema()
 
+# tillfällig "databas"
+temp_rooms = [
+    { "room_number": 101, "room_type": "Double room", "price": 100},
+    { "room_number": 202, "room_type": "Singel room", "price": 80},
+    { "room_number": 303, "room_type": "Suite", "price": 500},
+]
 
-# Main route for this API
+
 @app.get("/")
-def read_root(): 
+def read_root():
+    #testa databasen
     with get_conn() as conn, conn.cursor() as cur:
-        cur.execute("SELECT version() ")
-        result = cur.fetchone()
+        cur.execute ("""
+            SELECT  
+                'Databasen funkar!' AS msg, 
+                version() AS version
+        """)
+        db_status =  cur.fetchone()
+    return { "msg": "Välkommen till hotellets boknings-API", "db": db_status}
 
-    return { "msg": f"Hotel API!", "db_status": result }
-
-
-@app.get("/if/{term}")
-def if_test(term: str):
-    ret_str = "Default message..."
-    if (term == "hello" 
-        or term == "hi" 
-        or term == "greetings"):
-        
-        ret_str = "Hello yourself!"
-    elif (term == "morjens" or term == "hej") and 1 == 0:
-        ret_str = "Hej på dig"
-    else:
-        ret_str = f"vad betyder {term}?"
-
-    return { "msg": ret_str }
-
+@app.get("/rooms")
+def rooms():
+    return temp_rooms
 
 @app.post("/bookings")
 def create_booking():
