@@ -21,8 +21,6 @@ temp_rooms = [
     { "room_number": 303, "room_type": "Suite", "price": 500},
 ]
 
-
-
 @app.get("/")
 def read_root():
     return { "msg": "Välkommen till hotellets boknings-API"}
@@ -30,3 +28,8 @@ def read_root():
 @app.get("/rooms")
 def rooms():
     return temp_rooms
+
+@app.post("/bookings")
+def create_booking():
+    # skapa bokingen i databasen, INSERT INTO bookings...
+    return { "msg": "Booking skapad!"}
