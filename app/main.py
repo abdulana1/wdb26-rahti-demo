@@ -2,6 +2,7 @@ from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+from datetime import date
 from app.db import get_conn, create_schema
 
 app = FastAPI()
@@ -23,6 +24,8 @@ create_schema()
 class Booking(BaseModel):
     guest_id: int
     room_id: int
+    datefrom: date 
+    dateto: date
     
 
 # Main route for this API
@@ -75,20 +78,24 @@ def get_room(id: int):
     return room   
   
 
+# Create booking
 @app.post("/bookings")
 def create_booking(booking: Booking):
     with get_conn() as conn, conn.cursor() as cur:
         cur.execute("""
-             INSERT INTO bookings (
+            INSERT INTO bookings (
                 guest_id,
-                room_id
+                room_id,
+                datefrom,
+                dateto
             ) VALUES (
-                %s, 
-                %s
+                %s, %s, %s, %s
             ) RETURNING id
         """, (
             booking.guest_id, 
-            booking.room_id
-            ))
+            booking.room_id,
+            booking.datefrom,
+            booking.dateto
+        ))
         new_booking = cur.fetchone()
     return { "msg": "Booking created!", "id": new_booking['id']}
