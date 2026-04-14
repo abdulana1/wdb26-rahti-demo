@@ -14,27 +14,19 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# tillfällig "databas"
+temp_rooms = [
+    { "room_number": 101, "room_type": "Double room", "price": 100},
+    { "room_number": 202, "room_type": "Singel room", "price": 80},
+    { "room_number": 303, "room_type": "Suite", "price": 500},
+]
+
+
+
 @app.get("/")
 def read_root():
-    return { "msg": "Hello local docker"}
-
-@app.get("/api/ip")
-def ip(request: Request):
-    return { "ip": request.client.host}
-
-
-@app.get("/ip", response_class=HTMLResponse)
-def ip(request: Request):
-    return f"<h1>Din ip är {request.client.host}</h1>"
-
-@app.get("/hello")
-def hello():
-    return { "msg": "hello auror"}
+    return { "msg": "Välkommen till hotellets boknings-API"}
 
 @app.get("/rooms")
-def get_rooms():
-    rooms = [
-        {"room_number": 101, "type": "single", "price": 800},
-        {"room_number": 102, "type": "double", "price": 1200}
-    ]
-    return rooms
+def rooms():
+    return temp_rooms
