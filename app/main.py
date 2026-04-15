@@ -17,6 +17,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+#Skapa databas-schema:
 create_schema()
 
 # datamodell för bokning
@@ -64,6 +65,7 @@ def get_rooms():
         rooms = cur.fetchall()
     return rooms
 
+
 # Get one room
 @app.get("/rooms/{id}")
 def get_room(id: int):
@@ -76,6 +78,49 @@ def get_room(id: int):
         room = cur.fetchone()
     return room   
   
+
+# List all bookings 
+@app.get("/bookings")
+def get_bookings(): 
+    with get_conn() as conn, conn.cursor() as cur:
+        cur.execute("""
+            SELECT 
+                b.id,
+                g.firstname,
+                g.lastname,
+                r.room_number,
+                b.datefrom,
+                b.dateto,
+                (b.dateto - b.datefrom) AS nights,
+                (b.dateto - b.datefrom) * r.price AS total_price
+            FROM bookings b
+            INNER JOIN guests g ON b.guest_id = g.id
+            INNER JOIN rooms r ON b.room_id = r.id
+            ORDER BY b.id
+        """)
+        rooms = cur.fetchall()
+    return rooms
+
+# List all bookings
+@app.get("/guests")
+def get_guests():
+    with get_conn() as conn, conn.cursor() as cur:
+        cur.execute("""
+            SELECT 
+                g.id,
+                g.firstname,
+                g.lastname,
+                (
+                    SELECT COUNT(*) 
+                    FROM bookings b 
+                    WHERE b.guest_id = g.id
+                ) AS total_visits
+            FROM guests g
+            ORDER BY g.lastname
+        """)
+        guests = cur.fetchall()
+    return guests
+
 
 # Create booking
 @app.post("/bookings")
