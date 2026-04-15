@@ -17,7 +17,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-#Skapa databas-schema:
 create_schema()
 
 # datamodell för bokning
