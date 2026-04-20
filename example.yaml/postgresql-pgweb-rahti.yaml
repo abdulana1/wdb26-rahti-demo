@@ -23,8 +23,8 @@ spec:
           value: devdb
         - name: POSTGRES_USER
           value: devuser
-        #- name: POSTGRES_PASSWORD
-        #  value: devpassword
+        # - name: POSTGRES_PASSWORD
+        # value: devpassword
         # OPTIONALLY use a password from Secrets on OpenShift, like so:
         - name: POSTGRES_PASSWORD
           valueFrom:
